@@ -135,3 +135,7 @@
 
  十二：安装axios
    npm install axios --save  
+
+ 十三：修改npm的源地址
+      设置成淘宝源:npm config set registry https://registry.npm.taobao.org
+      查看结果:npm config get registry

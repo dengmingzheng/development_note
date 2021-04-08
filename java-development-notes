@@ -1,0 +1,27 @@
+Maven学习笔记
+
+一:maven的安装
+   1:下载maven安装包，解压到没有中文和空格的路径下
+   2:在环境变量下新建MAVEN_HOME指向到G:\Program Files\apache-maven-3.8.1
+   3:在环境变量path下添加%MAVEN_HOME%\bin
+   4:在cmd命令行下查看是否安装成功 mvn -v
+
+二:maven标准目录结构
+   src/main/java--java核心代码
+   src/main/resources--java配置文件
+   src/test/java--java测试代码
+   src/test/resources--java测试配置文件
+   src/main/webapp--页面资源
+
+三:maven常用命令
+   1:clean----maven clean(删除编译文件)
+   2:compile----maven compile(生成编辑文件)
+   3:test----maven test(测试)
+
+四:idea集成maven
+   File->setting->Build,Execution,Deployment->Build Tools->Maven
+   Maven home directory:G:/Program Files/apache-maven-3.8.1 --maven家目录
+   User settings file:G:\Program Files\apache-maven-3.8.1\conf\settings.xml --settings.xml文件路径
+
+   Runner->VM Options:-DarchetypeCatalog=internal
+

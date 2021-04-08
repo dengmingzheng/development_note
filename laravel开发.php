@@ -107,6 +107,8 @@ laravel开发必装插件
    2:使用 Yarn 安装依赖:yarn install
    3:安装成功后，运行以下命令即可：npm run watch-poll
 
+   处理yarn install安装失败报错---yarn install --no-bin-links,然后删除packge.json里面的cross-env
+
    watch-poll 会在你的终端里持续运行，监控 resources 文件夹下的资源文件是否有发生改变。在 watch-poll 命令运行的情况下，一旦资源文件发生变化，Webpack 会自动重新编译
 
 
@@ -192,6 +194,60 @@ laravel开发必装插件
 
 十一:Composer 抱怨内存不够
     如出现 Composer 抱怨内存不够的问题，请执行 composer self-update 升级到 2.0 
+
+十二:集成 Bootstrap
+   1:composer require laravel/ui:^3.0 --dev
+     composer require 是用来安装扩展包使用的命令，参数 --dev 是指定此扩展包只在开发环境中使用。
+    上面的命令安装完成后，使用以下命令来引入 Bootstrap
+   2:php artisan ui bootstrap
+   
+   以上命令做了以下事情：
+     在 npm 依赖配置文件 package.json 中引入 bootstrap、jquery、popper.js 作为依赖；
+     修改 resources/js/bootstrap.js ，在此文件中初始化 Bootstrap UI 框架的 JS 部分；
+     修改 resources/sass/app.scss 以加载 Bootstrap 的样式文件；
+     新增 resources/sass/_variables.scss 样式配置文件
+
+十三:配置redis队列
+    1：安装Redis依赖：composer require "predis/predis:~1.1"
+    2：在.env中修改环境变量
+       QUEUE_CONNECTION=redis
+       REDIS_CLIENT=predis
+
+    3:开启队列监听器--php artisan queue:listen   
+
+十四:用户切换工具 sudo-su
+    1：安装--composer require "viacreative/sudo-su:~1.1"
+    2：添加 Provider
+       在文件app/Providers/AppServiceProvider.php
+       public function register()
+        {
+            if (app()->isLocal()) {
+                $this->app->register(\VIACreative\SudoSu\ServiceProvider::class);
+            }
+        }
+
+    3:发布资源文件--php artisan vendor:publish --provider="VIACreative\SudoSu\ServiceProvider"    
+
+十五:管理后台
+     1:composer require "summerblue/administrator:7.*"
+     2:php artisan vendor:publish --provider="Frozennode\Administrator\AdministratorServiceProvider"    
+
+十六：手动部署laravel项目步骤
+     1：下载项目代码
+     2：下载Composer依赖--composer install
+     3：下载Nodejs依赖--SASS_BINARY_SITE=http://npm.taobao.org/mirrors/node-sass yarn
+     4：创建 .env 文件
+     5：生成key--php artisan key:generate
+     6：执行数据库迁移--php artisan migrate
+     7：生成假数据--php artisan db:seed
+     7：清除视图缓存--php artisan view:clear
+     8：清除路由缓存--php artisan route:clear
+
+十七：多角色用户权限
+     1：安装扩展包--composer require "spatie/laravel-permission:~3.0"
+     2：生成数据库迁移文件--php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider" --tag="migrations"
+     3：数据迁移--php artisan migrate
+     4：生成配置信息--php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider" --tag="config"
       
 1:Migration not found: 2019_07_25_213854_create_admins_table
   原因:手动删除数据表迁移文件后再次创建报错
@@ -203,8 +259,55 @@ laravel开发必装插件
   3:找到#PermitRootLogin，并将其改为 PermitRootLogin yes
   4:重启ssh服务 sudo service ssh restart
 
-3：Composer内存限制错误
-  1：memory_limit = -1
+3：解决Composer安装第三方包时提示内存限制错误
+  1：修改php.ini中的memory_limit = -1
+  2：更新Composer的版本 composer self-update
+
+4:ubuntu更新node.js版本
+  1:输入命令：sudo npm config set registry https://registry.npm.taobao.org，把npm的包源设置为淘宝的镜像
+  2:然后接着输入命令：sudo npm install n -g，来安装n这个工具，n这个工具是用于更新node版本的工具
+  3:输入命令：sudo n stable,安装node最新稳定版  sudo n latest 安装最新版本
+  4:node -v 查看版本
+
+5:VSCode代码格式化快捷键及保存时自动格式化  
+
+  一、实现vs code中代码格式化快捷键：【Shift】+【Alt】+F
+
+  二、实现保存时自动代码格式化：
+
+  1）文件 ------.>【首选项】---------->【设置】；
+
+  2）搜索emmet.include;
+
+  3）在settings.json下的【工作区设置】中添加以下语句：
+
+  "editor.formatOnType": true,
+  "editor.formatOnSave": true
+
+  4）随便写代码进行测试即可。
 
 
+六：重装 Homestead 虚拟机 暴力解决难题
+    重装虚拟机时保留原有 Homestead 设置
+    温馨提示：不要在开着虚拟机时直接关闭电脑或其他暴力关机，虚拟机会生病的。
+    温馨提示：Homestead 虚拟机疑难杂症的暴力解决方法是重构 （无需重新安装 BOX )
+    执行一下命令即可：
+    vagrant destroy --force
+    vagrant up
+
+    但会发现之前 vagrant 配置不存在了 比如 composer 和 npm 的镜像
+
+七：关于 yarn install 报错的问题
+    yarn install 报错一直解决不了的同学可以试试在本地执行
+    1. 先把 node_modules 文件夹删除
+    2. 在本地项目的根目录下用命令行执行 npm install
+    3. 上一步没报错的话再执行 npm install vue-template-compiler --save-dev --production=false
+    4. 然后到虚拟机里执行 npm run dev。。完美，执行的时候可以看你本地的 node_modules 目录里的文件变化，其实报错都是因为文件没有下载完全。。
+     
 cd ~/Homestead && vagrant provision && vagrant reload  
+
+
+
+
+
+hsshop
