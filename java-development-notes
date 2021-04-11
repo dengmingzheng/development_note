@@ -17,11 +17,35 @@ Maven学习笔记
    1:clean----maven clean(删除编译文件)
    2:compile----maven compile(生成编辑文件)
    3:test----maven test(测试)
+   4:test-compile -- maven test-compile(编译测试命令)
+   5:package--maven package(打包)
+   6:install--maven install(把生成的打包文件，安装到maven仓库)
 
 四:idea集成maven
    File->setting->Build,Execution,Deployment->Build Tools->Maven
    Maven home directory:G:/Program Files/apache-maven-3.8.1 --maven家目录
    User settings file:G:\Program Files\apache-maven-3.8.1\conf\settings.xml --settings.xml文件路径
 
-   Runner->VM Options:-DarchetypeCatalog=internal
+   Runner->VM Options:-DarchetypeCatalog=internal(maven在创建项目时，会从网络中下载一个archetype-catalog.xml作为项目的模板文件,DarchetypeCatalog=internal表示不用下载文件，加快创建maven项目的速度)
+
+五:依赖管理
+   1、依赖范围：使用scope表示依赖的范围
+   2、依赖范围表示这个依赖(jar和里面的类)在项目构建的那个阶段起作用
+   3、依赖范围scope：
+      compile:默认，参与构建项目的所有阶段
+      test:测试，在测试阶段使用，比如执行mvn test会使用junit
+      provider:提供者，项目在部署到服务器时，不需要提供这个依赖的jar，而是有服务器提供这个依赖的jar包。比如servlet和jsp依赖
+
+六：maven的常用设置
+  <properties>
+    项目构建使用的编码,避免中文乱码
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    生成报告的编码
+    <project.reporting.outputEnconding>UTF-8</project.reporting.outputEnconding>
+    源码编译jdk版本
+    <maven.compiler.source>1.7</maven.compiler.source>
+    运行代码的jdk版本
+    <maven.compiler.target>1.7</maven.compiler.target>
+  </properties>
+   
 
